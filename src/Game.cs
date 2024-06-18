@@ -10,7 +10,9 @@ namespace helloGraphics;
 public class Game : GameWindow
 {
     float[] vertices;
+    uint[] indices;
     int vertexBufferObject;
+    int elementBufferObject;
     int vertexArrayObject;
     Shader? shader;
     public Game(int width, int height, string title) :
@@ -18,10 +20,16 @@ public class Game : GameWindow
     {
         // Anti-CLock Wise
         vertices = [
-            0.0f,0.5f,0.0f,
+            -0.5f,0.5f,0.0f,
             -0.5f,-0.5f,0.0f,
             0.5f,-0.5f,0.0f,
+            0.5f,0.5f,0.0f,
         ];
+        indices = [
+            0,1,3,
+            1,2,3
+        ];
+
 
     }
     protected override void OnUpdateFrame(FrameEventArgs args)
@@ -38,6 +46,7 @@ public class Game : GameWindow
         // doing buffer stuff
         vertexBufferObject = GL.GenBuffer();
         vertexArrayObject = GL.GenVertexArray();
+        elementBufferObject = GL.GenBuffer();
         shader = new Shader("resources/basic.vert", "resources/basic.frag");
 
         // 1. bind VAO
@@ -45,9 +54,13 @@ public class Game : GameWindow
         // 2. copy vertices into buffer 
         GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferObject);
         GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
-        // set attributes pointer
+        // 3. set element buffer
+        GL.BindBuffer(BufferTarget.ElementArrayBuffer, elementBufferObject);
+        GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(float), indices, BufferUsageHint.StaticDraw);
+        // 4. set attributes pointer
         GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
         GL.EnableVertexAttribArray(0);
+        GL.BindVertexArray(vertexArrayObject);
 
     }
     protected override void OnRenderFrame(FrameEventArgs args)
@@ -56,8 +69,7 @@ public class Game : GameWindow
         GL.Clear(ClearBufferMask.ColorBufferBit);
 
         shader?.Use();
-        GL.BindVertexArray(vertexArrayObject);
-        GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
+        GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
 
         SwapBuffers();
     }
@@ -70,6 +82,8 @@ public class Game : GameWindow
     {
         base.OnUnload();
         shader?.Dispose();
+
+
 
     }
 
