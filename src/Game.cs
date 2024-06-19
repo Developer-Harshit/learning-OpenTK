@@ -10,16 +10,17 @@ public class Game : GameWindow
 {
     float[] vertices;
     uint[] indices;
+
     Renderer renderer;
     public Game(int width, int height, string title, WindowIcon icon) :
     base(GameWindowSettings.Default, new NativeWindowSettings() { ClientSize = (width, height), Title = title, Icon = icon })
     {
         // Anti-CLock Wise
         vertices = [
-                // positions        // colors
-                0.0f,  0.5f, 0.0f,  0.0f, 1.0f, 1.0f,
-                -0.5f, -0.5f, 0.0f,  1.0f, 1.0f, 0.0f,
-                0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 1.0f,
+                // positions         // colors          // texture
+                0.0f,  0.5f,  0.0f,  0.0f, 1.0f, 1.0f,  0.5f, 1.0f,
+                -0.5f, -0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  0.0f, 0.0f,
+                0.5f, -0.5f,  0.0f,  1.0f, 0.0f, 1.0f,  1.0f, 0.0f,
 
         ];
         indices = [

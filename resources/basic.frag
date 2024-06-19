@@ -1,9 +1,10 @@
 #version 330 core
 out vec4 FragColor;
-uniform float timeValue;
 in vec3 vColor;
+in vec2 vTexCoord;
+uniform sampler2D uTexture0;
 
 void main()
 {
-    FragColor = vec4(vColor,1.0);
+    FragColor = texture(uTexture0,vTexCoord);
 }  
