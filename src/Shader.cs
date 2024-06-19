@@ -3,7 +3,7 @@ namespace helloGraphics;
 
 public class Shader
 {
-    int shaderProgram;
+    public int program;
     public Shader(string vertexShaderPath, string fragmentShaderPath)
     {
         string vertexShaderCode = File.ReadAllText(vertexShaderPath);
@@ -18,28 +18,29 @@ public class Shader
         CompileAndCheckShaders(vertexShader, fragmentShader);
 
         // link them
-        shaderProgram = GL.CreateProgram();
-        GL.AttachShader(shaderProgram, vertexShader);
-        GL.AttachShader(shaderProgram, fragmentShader);
-        GL.LinkProgram(shaderProgram);
+        program = GL.CreateProgram();
+        GL.AttachShader(program, vertexShader);
+        GL.AttachShader(program, fragmentShader);
+        GL.LinkProgram(program);
 
-        GL.GetProgram(shaderProgram, GetProgramParameterName.LinkStatus, out int success);
+        GL.GetProgram(program, GetProgramParameterName.LinkStatus, out int success);
         if (success == 0)
         {
-            string infoLog = GL.GetProgramInfoLog(shaderProgram);
+            string infoLog = GL.GetProgramInfoLog(program);
             Console.WriteLine(infoLog);
         }
 
         // clean up
-        GL.DetachShader(shaderProgram, vertexShader);
-        GL.DetachShader(shaderProgram, fragmentShader);
+        GL.DetachShader(program, vertexShader);
+        GL.DetachShader(program, fragmentShader);
         GL.DeleteShader(fragmentShader);
         GL.DeleteShader(vertexShader);
     }
     public void Use()
     {
-        GL.UseProgram(shaderProgram);
+        GL.UseProgram(program);
     }
+
     static void CompileAndCheckShaders(int vertexShader, int fragmentShader)
     {
         GL.CompileShader(vertexShader);
@@ -64,7 +65,7 @@ public class Shader
     {
         if (!disposedValue)
         {
-            GL.DeleteProgram(shaderProgram);
+            GL.DeleteProgram(program);
             disposedValue = true;
         }
     }

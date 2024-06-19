@@ -16,14 +16,15 @@ public class Game : GameWindow
     {
         // Anti-CLock Wise
         vertices = [
-            -0.5f,0.5f,0.0f,
-            -0.5f,-0.5f,0.0f,
-            0.5f,-0.5f,0.0f,
-            0.5f,0.5f,0.0f,
+                // positions        // colors
+                0.0f,  0.5f, 0.0f,  0.0f, 1.0f, 1.0f,
+                -0.5f, -0.5f, 0.0f,  1.0f, 1.0f, 0.0f,
+                0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 1.0f,
+
         ];
         indices = [
-            0,1,3,
-            1,2,3
+            0,1,2,
+
         ];
         renderer = new Renderer();
     }
@@ -37,7 +38,7 @@ public class Game : GameWindow
     protected override void OnLoad()
     {
         base.OnLoad();
-        GL.ClearColor(0.2f, 0.9f, 0.6f, 1.0f);
+        GL.ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
         renderer.Load(vertices, indices);
     }
