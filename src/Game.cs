@@ -1,9 +1,9 @@
 ﻿using System.Security.Cryptography;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Common;
+using OpenTK.Windowing.Common.Input;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-
 
 namespace helloGraphics;
 
@@ -15,8 +15,8 @@ public class Game : GameWindow
     int elementBufferObject;
     int vertexArrayObject;
     Shader? shader;
-    public Game(int width, int height, string title) :
-    base(GameWindowSettings.Default, new NativeWindowSettings() { ClientSize = (width, height), Title = title })
+    public Game(int width, int height, string title, WindowIcon icon) :
+    base(GameWindowSettings.Default, new NativeWindowSettings() { ClientSize = (width, height), Title = title, Icon = icon })
     {
         // Anti-CLock Wise
         vertices = [
@@ -31,7 +31,10 @@ public class Game : GameWindow
         ];
 
 
+
+
     }
+
     protected override void OnUpdateFrame(FrameEventArgs args)
     {
         base.OnUpdateFrame(args);
