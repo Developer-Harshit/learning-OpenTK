@@ -1,4 +1,5 @@
 using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 namespace helloGraphics;
 class Renderer
 {
@@ -18,7 +19,7 @@ class Renderer
         texture1 = new Texture();
         shader = new Shader("resources/basic.vert", "resources/basic.frag");
     }
-    public void Load(float[] vertices, uint[] indices)
+    public void Load(float[] vertices, uint[] indices, Matrix4 transform)
     {
         count = indices.Length;
 
@@ -43,17 +44,18 @@ class Renderer
         texture0.Load("tex0");
         texture1.Load("tex1");
         // setting texture and uniforms
-        shader.Use();
-        shader.SetInt("uTexture0", 0);
-        shader.SetInt("uTexture1", 1);
+
 
     }
-    public void Draw()
+    public void Draw(Matrix4 transform)
     {
         texture0.Use(TextureUnit.Texture0);
         texture1.Use(TextureUnit.Texture1);
 
         shader.Use();
+        shader.SetUniform("uTexture0", 0);
+        shader.SetUniform("uTexture1", 1);
+        shader.SetUniform("uTransform", transform);
         GL.BindVertexArray(vertexArrayObject);
         GL.DrawElements(PrimitiveType.Triangles, count, DrawElementsType.UnsignedInt, 0);
     }

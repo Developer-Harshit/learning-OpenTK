@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 namespace helloGraphics;
 
 public class Shader
@@ -40,10 +41,15 @@ public class Shader
     {
         GL.UseProgram(program);
     }
-    public void SetInt(string name, int value)
+    public void SetUniform(string name, int value)
     {
         int location = GL.GetUniformLocation(program, name);
         GL.Uniform1(location, value);
+    }
+    public void SetUniform(string name, Matrix4 value)
+    {
+        int location = GL.GetUniformLocation(program, name);
+        GL.UniformMatrix4(location, true, ref value);
     }
 
     static void CompileAndCheckShaders(int vertexShader, int fragmentShader)
