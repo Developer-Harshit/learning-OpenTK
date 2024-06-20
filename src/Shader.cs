@@ -40,6 +40,11 @@ public class Shader
     {
         GL.UseProgram(program);
     }
+    public void SetInt(string name, int value)
+    {
+        int location = GL.GetUniformLocation(program, name);
+        GL.Uniform1(location, value);
+    }
 
     static void CompileAndCheckShaders(int vertexShader, int fragmentShader)
     {

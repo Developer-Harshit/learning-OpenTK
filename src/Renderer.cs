@@ -1,6 +1,4 @@
 using OpenTK.Graphics.OpenGL4;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
 namespace helloGraphics;
 class Renderer
 {
@@ -9,12 +7,15 @@ class Renderer
     int elementBufferObject;
     int vertexArrayObject;
     Shader shader;
-
+    Texture texture0;
+    Texture texture1;
     public Renderer()
     {
-        vertexBufferObject = GL.GenBuffer();
         vertexArrayObject = GL.GenVertexArray();
+        vertexBufferObject = GL.GenBuffer();
         elementBufferObject = GL.GenBuffer();
+        texture0 = new Texture();
+        texture1 = new Texture();
         shader = new Shader("resources/basic.vert", "resources/basic.frag");
     }
     public void Load(float[] vertices, uint[] indices)
@@ -38,24 +39,22 @@ class Renderer
         // texture corrds
         GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), 6 * sizeof(float));
         GL.EnableVertexAttribArray(2);
-
-        // setting texture params
-        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
-        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
-        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
-        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
         // loading texture
-        var image = (Image<Rgba32>)SixLabors.ImageSharp.Image.Load(Configuration.Default, "resources/icon.png");
-        byte[] pixels = new byte[4 * image.Width * image.Height];
-        image.CopyPixelDataTo(pixels);
-        GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, image.Width, image.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, pixels);
-        // generating mipmaps (only do it after loading texture)
-        GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+        texture0.Load("tex0");
+        texture1.Load("tex1");
+        // setting texture and uniforms
+        shader.Use();
+        shader.SetInt("uTexture0", 0);
+        shader.SetInt("uTexture1", 1);
 
     }
     public void Draw()
     {
+        texture0.Use(TextureUnit.Texture0);
+        texture1.Use(TextureUnit.Texture1);
+
         shader.Use();
+        GL.BindVertexArray(vertexArrayObject);
         GL.DrawElements(PrimitiveType.Triangles, count, DrawElementsType.UnsignedInt, 0);
     }
     public void Unload()
