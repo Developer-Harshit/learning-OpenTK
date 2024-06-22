@@ -10,7 +10,9 @@
 
   <ItemGroup>
     <PackageReference Include="OpenTK" Version="4.8.2" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="2.1.8" />
+    <PackageReference Include="StbImageSharp" Version="2.27.14" />
+    <PackageReference Include="Veldrid.ImGui" Version="5.72.0" />
+    <PackageReference Include="Veldrid.StartupUtilities" Version="4.9.0" />
   </ItemGroup>
 
 <ItemGroup>

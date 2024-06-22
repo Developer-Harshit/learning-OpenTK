@@ -1,8 +1,9 @@
 ﻿
+using ImGuiNET;
 using OpenTK.Windowing.Common.Input;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
+using StbImageSharp;
+using Veldrid;
+using Veldrid.StartupUtilities;
 namespace helloGraphics;
 class Program
 {
@@ -14,11 +15,9 @@ class Program
     }
     static WindowIcon CreateIcon()
     {
-        var image = (Image<Rgba32>)SixLabors.ImageSharp.Image.Load(Configuration.Default, "resources/icon.png");
-        image.Mutate(x => x.Flip(FlipMode.Vertical));
-        var pixels = new byte[4 * image.Width * image.Height];
-        image.CopyPixelDataTo(pixels);
-        WindowIcon icon = new(new OpenTK.Windowing.Common.Input.Image(image.Width, image.Height, pixels));
+        StbImage.stbi_set_flip_vertically_on_load(1);
+        var image = ImageResult.FromStream(File.OpenRead("resources/icon.png"), ColorComponents.RedGreenBlueAlpha);
+        WindowIcon icon = new(new OpenTK.Windowing.Common.Input.Image(image.Width, image.Height, image.Data));
         return icon;
     }
 }
