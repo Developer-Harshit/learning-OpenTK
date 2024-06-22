@@ -8,15 +8,14 @@ class Renderer
     int elementBufferObject;
     int vertexArrayObject;
     Shader shader;
-    Texture texture0;
-    Texture texture1;
+    Texture texture;
+
     public Renderer()
     {
         vertexArrayObject = GL.GenVertexArray();
         vertexBufferObject = GL.GenBuffer();
         elementBufferObject = GL.GenBuffer();
-        texture0 = new Texture();
-        texture1 = new Texture();
+        texture = new Texture();
         shader = new Shader("resources/basic.vert", "resources/basic.frag");
     }
     public void Load(float[] vertices, uint[] indices, Matrix4 transform)
@@ -32,32 +31,30 @@ class Renderer
         GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(float), indices, BufferUsageHint.StaticDraw);
 
         // position
-        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), 0);
+        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
         GL.EnableVertexAttribArray(0);
-        // color
-        GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), 3 * sizeof(float));
-        GL.EnableVertexAttribArray(1);
         // texture corrds
-        GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), 6 * sizeof(float));
-        GL.EnableVertexAttribArray(2);
+        GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
+        GL.EnableVertexAttribArray(1);
         // loading texture
-        texture0.Load("tex0");
-        texture1.Load("tex1");
-        // setting texture and uniforms
+        texture.Load("tex1");
 
 
     }
-    public void Draw(Matrix4 transform)
+    public void Draw(Matrix4 model, Matrix4 view, Matrix4 projection)
     {
-        texture0.Use(TextureUnit.Texture0);
-        texture1.Use(TextureUnit.Texture1);
+
+        texture.Use(TextureUnit.Texture0);
+        // texture1.Use(TextureUnit.Texture1);
 
         shader.Use();
         shader.SetUniform("uTexture0", 0);
-        shader.SetUniform("uTexture1", 1);
-        shader.SetUniform("uTransform", transform);
+        shader.SetUniform("uModel", model);
+        shader.SetUniform("uView", view);
+        shader.SetUniform("uProjection", projection);
         GL.BindVertexArray(vertexArrayObject);
-        GL.DrawElements(PrimitiveType.Triangles, count, DrawElementsType.UnsignedInt, 0);
+        GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
+        // GL.DrawElements(PrimitiveType.Triangles, count, DrawElementsType.UnsignedInt, 0);
     }
     public void Unload()
     {
