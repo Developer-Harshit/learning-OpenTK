@@ -14,6 +14,8 @@ public class Game : GameWindow
 
     Renderer renderer;
     Matrix4 transform;
+    public float orthoX;
+    public float orthoY;
     public float angle;
     public float Angle
     {
@@ -80,18 +82,20 @@ public class Game : GameWindow
            0,2,3
         ];
         Angle = 0;
+        orthoX = 2f;
+        orthoY = 2f;
         Matrix4 rotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians((int)Angle));
         Matrix4 scale = Matrix4.CreateScale(0.5f);
         transform = rotation * scale;
         renderer = new Renderer();
-        gui = new CreateGui(this, 500, 300, "Control");
+        gui = new CreateGui(this);
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args)
     {
         base.OnUpdateFrame(args);
         if (KeyboardState.IsKeyDown(Keys.Escape)) Close();
-        gui.Run();
+        gui.OnUpdateFrame(args);
     }
 
     protected override void OnLoad()
@@ -109,23 +113,24 @@ public class Game : GameWindow
 
         Matrix4 model = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(-angle));
         Matrix4 view = Matrix4.CreateTranslation(0.0f, 0.0f, -3.0f);
-        Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), (float)ClientSize.X / ClientSize.Y, 0.1f, 100.0f);
-        // Matrix4 projection = Matrix4.CreateOrthographicOffCenter(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f);
+        // Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), (float)ClientSize.X / ClientSize.Y, 0.1f, 100.0f);
+        Matrix4 projection = Matrix4.CreateOrthographicOffCenter(-orthoX, orthoX, -orthoY, orthoY, 0.01f, 100f);
 
         renderer.Draw(model, view, projection);
-
+        gui.OnRenderFrame(args);
         SwapBuffers();
     }
-    protected override void OnFramebufferResize(FramebufferResizeEventArgs e)
+    protected override void OnFramebufferResize(FramebufferResizeEventArgs args)
     {
-        base.OnFramebufferResize(e);
-        GL.Viewport(0, 0, e.Width, e.Height);
+        base.OnFramebufferResize(args);
+        GL.Viewport(0, 0, args.Width, args.Height);
+        gui.OnResize(args);
     }
     protected override void OnUnload()
     {
         base.OnUnload();
         renderer.Unload();
-        gui.visible = false;
+        gui.OnUnload();
     }
 
 }

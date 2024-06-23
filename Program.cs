@@ -1,9 +1,6 @@
 ﻿
-using ImGuiNET;
 using OpenTK.Windowing.Common.Input;
 using StbImageSharp;
-using Veldrid;
-using Veldrid.StartupUtilities;
 namespace helloGraphics;
 class Program
 {
