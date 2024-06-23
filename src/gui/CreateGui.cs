@@ -15,10 +15,7 @@ namespace helloGraphics
             controller = new GuiController(game.ClientSize.X, game.ClientSize.Y);
         }
 
-        public void OnLoad()
-        {
-
-        }
+        public void OnLoad() { }
 
         public void OnResize(FramebufferResizeEventArgs args)
         {
@@ -39,11 +36,7 @@ namespace helloGraphics
 
                 ImGui.Begin("debug", ImGuiWindowFlags.AlwaysAutoResize);
                 if (ImGui.Button("Hide Panel")) showGUI = false;
-                float angle = game.Angle;
-                if (ImGui.SliderFloat("Angle", ref angle, 0, 360)) game.Angle = angle;
-                ImGui.SliderFloat("ortho x", ref game.orthoX, 0, 20);
-                ImGui.SliderFloat("ortho y", ref game.orthoY, 0, 20);
-
+                ImGui.SliderFloat("Angle", ref game.angle, 0, 360);
                 ImGui.End();
             }
             else

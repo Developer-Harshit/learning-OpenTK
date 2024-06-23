@@ -11,23 +11,9 @@ public class Game : GameWindow
 {
     float[] vertices;
     uint[] indices;
-
+    Camera cam;
     Renderer renderer;
-    Matrix4 transform;
-    public float orthoX;
-    public float orthoY;
     public float angle;
-    public float Angle
-    {
-        get { return angle; }
-        set
-        {
-            angle = value;
-            Matrix4 rotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians((int)Angle));
-            Matrix4 scale = Matrix4.CreateScale(0.5f);
-            transform = rotation * scale;
-        }
-    }
     CreateGui gui;
     public Game(int width, int height, string title, WindowIcon icon) :
     base(GameWindowSettings.Default, new NativeWindowSettings() { ClientSize = (width, height), Title = title, Icon = icon })
@@ -81,20 +67,28 @@ public class Game : GameWindow
            0,1,2,
            0,2,3
         ];
-        Angle = 0;
-        orthoX = 2f;
-        orthoY = 2f;
-        Matrix4 rotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians((int)Angle));
-        Matrix4 scale = Matrix4.CreateScale(0.5f);
-        transform = rotation * scale;
+        angle = 0;
+        cam = new Camera((float)ClientSize.X / ClientSize.Y);
         renderer = new Renderer();
         gui = new CreateGui(this);
+        CursorState = CursorState.Grabbed;
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args)
     {
+        if (!IsFocused) return;
         base.OnUpdateFrame(args);
-        if (KeyboardState.IsKeyDown(Keys.Escape)) Close();
+        var kstate = KeyboardState;
+        float dt = (float)args.Time;
+        if (kstate.IsKeyDown(Keys.Escape)) Close();
+        if (kstate.IsKeyDown(Keys.W)) cam.MoveZ(dt);
+        if (kstate.IsKeyDown(Keys.S)) cam.MoveZ(-dt);
+        if (kstate.IsKeyDown(Keys.A)) cam.MoveX(-dt);
+        if (kstate.IsKeyDown(Keys.D)) cam.MoveX(dt);
+        if (kstate.IsKeyDown(Keys.Space)) cam.MoveY(-dt);
+        if (kstate.IsKeyDown(Keys.LeftShift)) cam.MoveY(dt);
+
+        cam.Update(MouseState);
         gui.OnUpdateFrame(args);
     }
 
@@ -103,8 +97,7 @@ public class Game : GameWindow
         base.OnLoad();
         GL.ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         GL.Enable(EnableCap.DepthTest);
-
-        renderer.Load(vertices, indices, transform);
+        renderer.Load(vertices, indices);
     }
     protected override void OnRenderFrame(FrameEventArgs args)
     {
@@ -112,10 +105,8 @@ public class Game : GameWindow
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
         Matrix4 model = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(-angle));
-        Matrix4 view = Matrix4.CreateTranslation(0.0f, 0.0f, -3.0f);
-        // Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45.0f), (float)ClientSize.X / ClientSize.Y, 0.1f, 100.0f);
-        Matrix4 projection = Matrix4.CreateOrthographicOffCenter(-orthoX, orthoX, -orthoY, orthoY, 0.01f, 100f);
-
+        Matrix4 view = cam.GetView();
+        Matrix4 projection = cam.GetProjection();
         renderer.Draw(model, view, projection);
         gui.OnRenderFrame(args);
         SwapBuffers();
@@ -124,7 +115,23 @@ public class Game : GameWindow
     {
         base.OnFramebufferResize(args);
         GL.Viewport(0, 0, args.Width, args.Height);
+        cam.aspect = (float)args.Width / args.Height;
         gui.OnResize(args);
+    }
+    protected override void OnMouseMove(MouseMoveEventArgs e)
+    {
+        base.OnMouseMove(e);
+    }
+    protected override void OnMouseWheel(MouseWheelEventArgs args)
+    {
+        base.OnMouseWheel(args);
+        cam.UpdateFov(args.OffsetY);
+        gui.OnMouseWheel(args);
+    }
+    protected override void OnTextInput(TextInputEventArgs args)
+    {
+        base.OnTextInput(args);
+        gui.OnTextInput(args);
     }
     protected override void OnUnload()
     {

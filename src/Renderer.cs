@@ -18,7 +18,7 @@ class Renderer
         texture = new Texture();
         shader = new Shader("resources/basic.vert", "resources/basic.frag");
     }
-    public void Load(float[] vertices, uint[] indices, Matrix4 transform)
+    public void Load(float[] vertices, uint[] indices)
     {
         count = indices.Length;
 
