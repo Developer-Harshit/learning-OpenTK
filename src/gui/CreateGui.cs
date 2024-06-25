@@ -36,7 +36,6 @@ namespace helloGraphics
 
                 ImGui.Begin("debug", ImGuiWindowFlags.AlwaysAutoResize);
                 if (ImGui.Button("Hide Panel")) showGUI = false;
-                ImGui.SliderFloat("Angle", ref game.angle, 0, 360);
                 ImGui.End();
             }
             else

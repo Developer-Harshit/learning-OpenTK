@@ -46,6 +46,21 @@ public class Shader
         int location = GL.GetUniformLocation(program, name);
         GL.Uniform1(location, value);
     }
+    public void SetUniform(string name, Vector2 value)
+    {
+        int location = GL.GetUniformLocation(program, name);
+        GL.Uniform2(location, ref value);
+    }
+    public void SetUniform(string name, Vector3 value)
+    {
+        int location = GL.GetUniformLocation(program, name);
+        GL.Uniform3(location, ref value);
+    }
+    public void SetUniform(string name, Vector4 value)
+    {
+        int location = GL.GetUniformLocation(program, name);
+        GL.Uniform4(location, ref value);
+    }
     public void SetUniform(string name, Matrix4 value)
     {
         int location = GL.GetUniformLocation(program, name);

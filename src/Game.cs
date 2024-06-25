@@ -13,61 +13,33 @@ public class Game : GameWindow
     uint[] indices;
     Camera cam;
     Renderer renderer;
-    public float angle;
     CreateGui gui;
     public Game(int width, int height, string title, WindowIcon icon) :
     base(GameWindowSettings.Default, new NativeWindowSettings() { ClientSize = (width, height), Title = title, Icon = icon })
     {
-        // Anti-CLock Wise
+
         vertices = [
-            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-            0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+            // positions          // color
+            -0.5f, -0.5f, -0.5f,  1.0f,0.0f,1.0f, // magenta
+            +0.5f, -0.5f, -0.5f,  0.0f,0.0f,1.0f, // blue
+            +0.5f,  0.5f, -0.5f,  0.0f,1.0f,1.0f, // cyan
+            -0.5f,  0.5f, -0.5f,  1.0f,1.0f,1.0f, // white
+            -0.5f, -0.5f,  0.5f,  1.0f,0.0f,0.0f, // red
+            +0.5f, -0.5f,  0.5f,  0.0f,0.0f,0.0f, // black
+            +0.5f,  0.5f,  0.5f,  0.0f,1.0f,0.0f, // green
+            -0.5f,  0.5f,  0.5f,  1.0f,1.0f,0.0f, // yellow
         ];
-        // im not using indices for now
+        // Anti-CLock Wise
         indices = [
-           0,1,2,
-           0,2,3
+            0,1,2,2,3,0,
+            4,5,6,6,7,4,
+            7,3,0,0,4,7,
+            6,2,1,1,5,6,
+            0,1,5,5,4,0,
+            3,2,6,6,7,3,
         ];
-        angle = 0;
+
+
         cam = new Camera((float)ClientSize.X / ClientSize.Y);
         renderer = new Renderer();
         gui = new CreateGui(this);
@@ -95,19 +67,12 @@ public class Game : GameWindow
     protected override void OnLoad()
     {
         base.OnLoad();
-        GL.ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        GL.Enable(EnableCap.DepthTest);
         renderer.Load(vertices, indices);
     }
     protected override void OnRenderFrame(FrameEventArgs args)
     {
         base.OnRenderFrame(args);
-        GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-        Matrix4 model = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(-angle));
-        Matrix4 view = cam.GetView();
-        Matrix4 projection = cam.GetProjection();
-        renderer.Draw(model, view, projection);
+        renderer.Draw(cam);
         gui.OnRenderFrame(args);
         SwapBuffers();
     }
@@ -125,7 +90,7 @@ public class Game : GameWindow
     protected override void OnMouseWheel(MouseWheelEventArgs args)
     {
         base.OnMouseWheel(args);
-        cam.UpdateFov(args.OffsetY);
+        cam.Fov -= args.OffsetY * 4;
         gui.OnMouseWheel(args);
     }
     protected override void OnTextInput(TextInputEventArgs args)
