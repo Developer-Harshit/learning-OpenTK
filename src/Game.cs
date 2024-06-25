@@ -10,8 +10,7 @@ namespace helloGraphics;
 public class Game : GameWindow
 {
     float[] vertices;
-    uint[] indices;
-    Camera cam;
+    public Camera cam;
     Renderer renderer;
     CreateGui gui;
     public Game(int width, int height, string title, WindowIcon icon) :
@@ -19,37 +18,59 @@ public class Game : GameWindow
     {
 
         vertices = [
-            // positions          // color
-            -0.5f, -0.5f, -0.5f,  1.0f,0.0f,1.0f, // magenta
-            +0.5f, -0.5f, -0.5f,  0.0f,0.0f,1.0f, // blue
-            +0.5f,  0.5f, -0.5f,  0.0f,1.0f,1.0f, // cyan
-            -0.5f,  0.5f, -0.5f,  1.0f,1.0f,1.0f, // white
-            -0.5f, -0.5f,  0.5f,  1.0f,0.0f,0.0f, // red
-            +0.5f, -0.5f,  0.5f,  0.0f,0.0f,0.0f, // black
-            +0.5f,  0.5f,  0.5f,  0.0f,1.0f,0.0f, // green
-            -0.5f,  0.5f,  0.5f,  1.0f,1.0f,0.0f, // yellow
-        ];
-        // Anti-CLock Wise
-        indices = [
-            0,1,2,2,3,0,
-            4,5,6,6,7,4,
-            7,3,0,0,4,7,
-            6,2,1,1,5,6,
-            0,1,5,5,4,0,
-            3,2,6,6,7,3,
-        ];
+            // positions          // normals
+            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+             0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+             0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+             0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
+            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+             0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
 
+            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+             0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+             0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+             0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+             0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+             0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+        ];
         cam = new Camera((float)ClientSize.X / ClientSize.Y);
-        renderer = new Renderer();
+        renderer = new Renderer(this);
         gui = new CreateGui(this);
-        CursorState = CursorState.Grabbed;
+        // CursorState = CursorState.Grabbed;
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args)
     {
-        if (!IsFocused) return;
         base.OnUpdateFrame(args);
+        if (!IsFocused) return;
         var kstate = KeyboardState;
         float dt = (float)args.Time;
         if (kstate.IsKeyDown(Keys.Escape)) Close();
@@ -67,12 +88,12 @@ public class Game : GameWindow
     protected override void OnLoad()
     {
         base.OnLoad();
-        renderer.Load(vertices, indices);
+        renderer.Load(vertices);
     }
     protected override void OnRenderFrame(FrameEventArgs args)
     {
         base.OnRenderFrame(args);
-        renderer.Draw(cam);
+        renderer.Draw();
         gui.OnRenderFrame(args);
         SwapBuffers();
     }

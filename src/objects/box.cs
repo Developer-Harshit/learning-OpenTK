@@ -38,7 +38,7 @@ class BoxRenderer
         // position
         GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 0);
         GL.EnableVertexAttribArray(0);
-        // color
+        // normal
         GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 3 * sizeof(float));
         GL.EnableVertexAttribArray(1);
     }
@@ -51,10 +51,11 @@ class BoxRenderer
         shader.SetUniform("uProjection", projection);
         shader.SetUniform("uLightColor", new Vector3(1f));
         shader.SetUniform("uLightPos", rnd.lamp.pos);
+        shader.SetUniform("uViewPos", rnd.game.cam.pos);
         foreach (var model in models)
         {
             shader.SetUniform("uModel", model);
-            GL.DrawElements(PrimitiveType.Triangles, rnd.count, DrawElementsType.UnsignedInt, 0);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
         }
     }
     public void Unload()

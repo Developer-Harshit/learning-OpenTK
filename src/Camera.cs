@@ -3,7 +3,7 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 namespace helloGraphics;
-class Camera
+public class Camera
 {
     float speed = 5;
     private float fov = 45;

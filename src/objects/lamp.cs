@@ -30,7 +30,7 @@ class LampRenderer
         shader.SetUniform("uView", view);
         shader.SetUniform("uProjection", projection);
         shader.SetUniform("uModel", model);
-        GL.DrawElements(PrimitiveType.Triangles, rnd.count, DrawElementsType.UnsignedInt, 0);
+        GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
     }
     public void Unload()
     {
